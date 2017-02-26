@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>seth in dev</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="seth in dev">
+<meta property="og:url" content="http://seth2810.github.io/page/2/index.html">
+<meta property="og:site_name" content="seth in dev">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="seth in dev">
+  
+    <link rel="alternate" href="/atom.xml" title="seth in dev" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/blog/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">seth in dev</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">Yet another software developer blog.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blog/">Home</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://seth2810.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-pimp-my-git" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/03/24/pimp-my-git.html" class="article-date">
+  <time datetime="2014-03-24T07:13:47.000Z" itemprop="datePublished">24/03/2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/git/">git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/03/24/pimp-my-git.html">Pimp My Git</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Данный пост не претендует на статус <a href="git-scm.com/book/ru">руководства</a>, а является лишь сборником usecases и workflow используемых автором при ежедневной работе с git, и будет пополняться и обновляться с течением времени.</p>
+<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><p>Любая работа с git начинается с настройки. Но не все разработчики задаются целью потратить больше времени и немного подкрутив git, сократить себе в дальнейшем время при разработке.<br>Так уж исторически сложилось, что я не являюсь сторонником использования какого-либо GUI, потому, что большинство времени провожу на удаленном сервере, и считаю, что git вполне позволяет реализовать все недостающие возможности стандартными средствами.<br>Чтож, приступим к прокачке, для начала улучшив стандартный и скучный <code>git log</code> добавив к нему графическое отображение состояния веток, и пропишем alias’ы для основных комманд git.<br>Данную конфигурацию желательно поместить в ~/.gitconfig, чтобы в дальнейшем использовать данные настройки в любом репозитории git:</p>
+<figure class="highlight plain"><figcaption><span>.gitignore</span><a href="/blog/downloads/code/posts/pimp-my-git/.gitignore">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">[color]</div><div class="line">  ui = auto</div><div class="line">  branch = never</div><div class="line"></div><div class="line">[color &quot;branch&quot;]</div><div class="line">  current = yellow reverse</div><div class="line">  local = yellow</div><div class="line">  remote = green</div><div class="line"></div><div class="line">[color &quot;diff&quot;]</div><div class="line">  meta = yellow bold</div><div class="line">  frag = magenta bold</div><div class="line">  old = red bold</div><div class="line">  new = green bold</div><div class="line"></div><div class="line">[color &quot;status&quot;]</div><div class="line">  added = yellow</div><div class="line">  changed = green</div><div class="line">  untracked = cyan</div><div class="line"></div><div class="line">[alias]</div><div class="line">  st = status</div><div class="line">  ci = commit</div><div class="line">  br = branch</div><div class="line">  co = checkout</div><div class="line">  df = diff --color</div><div class="line">  rs = reset</div><div class="line">  rb = rebase</div><div class="line">  sh = stash</div><div class="line">  shp = stash pop</div><div class="line">  lg = log --pretty=format:&apos;%h %Cblue%cn %Creset%cr %Cgreen%s&apos;</div><div class="line">  plg = log --graph --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&apos; --abbrev-commit --date=relative</div><div class="line">  lg2 = log --graph --all --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&apos; --abbrev-commit --date=relative</div><div class="line">  alg = log --graph --all --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n&apos;&apos; %C(white)%s%C(reset) %C(bold white)— %an%C(reset)&apos; --abbrev-commit</div></pre></td></tr></table></figure>
+<p>Теперь мы можем просмотреть древовидную историю текущей ветки просто выполнив в терминале <code>git plg</code>, а полную историю репозитория выполнив <code>git alg</code>.<br>Так же <code>git df</code> покажет нам более привычный вид изменений, как например в github’е, а <code>git lg</code> покажет улучшенную историю коммитов.<br>И как я уже говорил, вы получаете это в каждом репозитории живущем на вашей машине.</p>
+<h2 id="bashrc"><a href="#bashrc" class="headerlink" title=".bashrc"></a>.bashrc</h2><p>Не думаю что файл <a href="http://ru.wikipedia.org/wiki/Bash" target="_blank" rel="external">.bashrc</a>, является безизвестным среди аудитории читающей данную статью. Он выполняет команды при инициализации сессии терминала.<br>Добавим некоторые улучшения по работе с git в терминал, просто добавив следующие строки в ~/.bashrc:<br>Про то, что , мы знаем не понаслышке.<br>Поэтому добавим alias для этой комплексной операции, добавив следующие строки в ~/.bashrc:</p>
+<figure class="highlight bash"><figcaption><span>.bashrc</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># отображение в терминале текущей ветки, если мы находимся в репозитории git</span></div><div class="line">PS1=<span class="string">'\[\033[01;36m\]`git branch 2&gt;/dev/null | grep "^* " | sed "s/^* //" | sed "s/%-&gt;%//"` \[\033[01;37m\][\w]\[\033[00m\] \[\033[01;32m\]$\[\033[00m\] '</span></div><div class="line"></div><div class="line"><span class="comment"># чтобы всегда быть "на острие изменений" и ежедневно обновлять состояние ветки изменениями из master'a</span></div><div class="line"><span class="function"><span class="title">git_update_current_branch</span></span>() &#123;</div><div class="line">    br=`git branch | grep <span class="string">"*"</span> | sed <span class="_">-e</span> <span class="string">"s/* //"</span>`</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Stashing changes"</span></div><div class="line">    git stash</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching to master"</span></div><div class="line">    git checkout master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Updating master"</span></div><div class="line">    git pull</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching back to <span class="variable">$br</span>"</span></div><div class="line">    git checkout <span class="variable">$br</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Merging master to <span class="variable">$br</span>"</span></div><div class="line">    git merge master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Unstashing changes"</span></div><div class="line">    git stash pop</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Done!"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># очищаем репозиторий от неиспользуемых веток</span></div><div class="line"><span class="function"><span class="title">git_clear_branches</span></span>() &#123;</div><div class="line">    git checkout master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching to master"</span></div><div class="line">    git branch | grep -v master | xargs git branch -D</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Delete all branches"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># алиасы</span></div><div class="line"><span class="built_in">alias</span> cbr=<span class="string">'git_clear_branches'</span></div><div class="line"><span class="built_in">alias</span> mrg=<span class="string">'git_update_current_branch'</span></div></pre></td></tr></table></figure>
+<p>Конечно в данном варианте присутствует припрятывание текущих изменений используя stash, и оно не всегда валидно работает, например если нет изменений то stash pop выкатит какие-ннибудь давно припрятанные изменения.<br>Но это исправляется узъятием ненужных строк.</p>
+<blockquote><p>Have fun. Git make your life better!</p>
+</blockquote>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://seth2810.github.io/blog/2014/03/24/pimp-my-git.html" data-id="cizm6u10d00032pgix7i7vu6c" class="article-share-link">Share</a>
+      
+        <a href="http://seth2810.github.io/blog/2014/03/24/pimp-my-git.html#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/faq/">faq</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/git/">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/blog/">&laquo; Prev</a><a class="page-number" href="/blog/">1</a><span class="page-number current">2</span><a class="page-number" href="/blog/page/3/">3</a><a class="page-number" href="/blog/page/4/">4</a><a class="extend next" rel="next" href="/blog/page/3/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/">scala</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/">akka</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/rlp/">rlp</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/rlp/translations/">translations</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/">java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/translations/">translations</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/translations/interview/">interview</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/translations/">translations</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/translations/interview/">interview</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/faq/">faq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/blog/tags/faq/" style="font-size: 10px;">faq</a> <a href="/blog/tags/git/" style="font-size: 10px;">git</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/05/">May 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/03/">March 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2014/05/09/a-handful-akka-techniques.html">Полезные техники Akka</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/24/pimp-my-git.html">Pimp My Git</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html">Пока оно компилируется - Крис Маршалл</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html">Java и Scala - Бывшие конкуренты вскоре могут стать лучшими друзьями</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 seth2810<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'seth2810-blog';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
+  <script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/blog/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>

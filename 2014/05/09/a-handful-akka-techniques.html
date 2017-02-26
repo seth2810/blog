@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Полезные техники Akka | seth in dev</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Я использую Akka в течение 3 лет в различных проектах и теперь, я с трудом представляю себе взаимодействие с некоторыми из частей моей работы без нее. Конечно, Scala предоставляет другие мощные паради">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Полезные техники Akka">
+<meta property="og:url" content="http://seth2810.github.io/2014/05/09/a-handful-akka-techniques.html">
+<meta property="og:site_name" content="seth in dev">
+<meta property="og:description" content="Я использую Akka в течение 3 лет в различных проектах и теперь, я с трудом представляю себе взаимодействие с некоторыми из частей моей работы без нее. Конечно, Scala предоставляет другие мощные паради">
+<meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/Du200613-176x300.gif">
+<meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/simple-batch.png">
+<meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/multi-step-batch.png">
+<meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/88vce.jpg">
+<meta property="og:updated_time" content="2017-02-26T04:08:13.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Полезные техники Akka">
+<meta name="twitter:description" content="Я использую Akka в течение 3 лет в различных проектах и теперь, я с трудом представляю себе взаимодействие с некоторыми из частей моей работы без нее. Конечно, Scala предоставляет другие мощные паради">
+<meta name="twitter:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/Du200613-176x300.gif">
+  
+    <link rel="alternate" href="/atom.xml" title="seth in dev" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/blog/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/blog/" id="logo">seth in dev</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/blog/" id="subtitle">Yet another software developer blog.</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/blog/">Home</a>
+        
+          <a class="main-nav-link" href="/blog/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://seth2810.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-a-handful-akka-techniques" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/05/09/a-handful-akka-techniques.html" class="article-date">
+  <time datetime="2014-05-09T04:44:50.000Z" itemprop="datePublished">09/05/2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/scala/">scala</a>►<a class="article-category-link" href="/blog/categories/scala/akka/">akka</a>►<a class="article-category-link" href="/blog/categories/scala/akka/rlp/">rlp</a>►<a class="article-category-link" href="/blog/categories/scala/akka/rlp/translations/">translations</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Полезные техники Akka
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Я использую <a href="http://akka.io/" target="_blank" rel="external">Akka</a> в течение 3 лет в различных проектах и теперь, я с трудом представляю себе взаимодействие с некоторыми из частей моей работы без нее. Конечно, Scala предоставляет другие мощные парадигмы для работы с параллелизмом, но я нахожу, Акторы, одной из самых элегантных концепций, когда дело доходит до рассуждений о ней.</p>
+<p>Есть несколько техник, которые я многократно использовал в проектах, и которыми я хочу поделиться. Однако внимательнее к ошибкам - я не считаю себя экспертом Akka, поэтому некоторые из них могут оказаться неоптимальными техниками или даже анти-паттернами - используйте их на свой страх и риск, и убедитесь, что вы понимаете их ограничения. Кроме того, если вы еще этого не сделали, я всеми средствами рекомендовал бы сесть со свежей чашкой кофе и <a href="http://akka.io/docs/" target="_blank" rel="external">прочесть замечательную документацию Akka</a>.</p>
+<h2 id="Часы-с-кукушкой"><a href="#Часы-с-кукушкой" class="headerlink" title="Часы с кукушкой"></a>Часы с кукушкой</h2><img src="/blog/downloads/images/posts/a-handful-akka-techniques/Du200613-176x300.gif">
+<p>Я использую эту технику в основном в проектах с <a href="http://manuel.bernhardt.io/2014/04/23/a-handful-akka-techniques/playframework.com" target="_blank" rel="external">фреймворком Play</a>. Первая версия фреймворка имела механизм для многократного выполнения задач, который был удален в версии 2 с рекомендацией использовать <a href="http://doc.akka.io/docs/akka/snapshot/scala/scheduler.html" target="_blank" rel="external">планировщики</a> Akka.</p>
+<p>Основная идея этой техники заключается в инкапсуляции логики задачи, которая должна быть выполнена многократно или в определенное время, в одном акторе, и пробуждении актора отправкой ему сообщения:</p>
+<figure class="highlight scala"><figcaption><span>CockooClock.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClock.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ScheduledOrderSynchronizer</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="keyword">val</span> <span class="type">SYNC_ALL_ORDERS</span> = <span class="string">"SYNC_ALL_ORDERS"</span></div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="keyword">var</span> scheduler: <span class="type">Cancellable</span> = _</div><div class="line"></div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">preStart</span></span>(): <span class="type">Unit</span> = {</div><div class="line">    <span class="keyword">import</span> scala.concurrent.duration._</div><div class="line">    scheduler = context.system.scheduler.schedule(</div><div class="line">      initialDelay = <span class="number">10</span> seconds,</div><div class="line">      interval = <span class="number">5</span> minutes,</div><div class="line">      receiver = self,</div><div class="line">      message = <span class="type">SYNC_ALL_ORDERS</span></div><div class="line">    )</div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">postStop</span></span>(): <span class="type">Unit</span> = {</div><div class="line">    scheduler.cancel()</div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line">    <span class="keyword">case</span> <span class="type">SYNC_ALL_ORDERS</span> =&gt;</div><div class="line">      <span class="keyword">try</span> {</div><div class="line">        <span class="comment">// synchronize all the orders</span></div><div class="line">      } <span class="keyword">catch</span> {</div><div class="line">        <span class="keyword">case</span> t: <span class="type">Throwable</span> =&gt;</div><div class="line">          <span class="comment">// report errors</span></div><div class="line">      }</div><div class="line">  }</div><div class="line"></div><div class="line">}</div></pre></td></tr></table></figure>
+<p>Давайте посмотрим на то, как работает этот механизм в деталях:</p>
+<ul>
+<li><p>прежде всего, мы должны инициализировать наш планировщик. Для этого, я считаю, полезно использовать методы жизненного цикла актора preStart и postStop . Можно было бы целиком объявить планировщикагде-нибудь еще и отправлять сообщения актору, однако я считаю, что инкапсуляция логики сильно облегчает техническое обслуживание, особенно, когда есть несколько подобных механизмов в одном и том же приложении.</p>
+</li>
+<li><p>мы создаем планировщик используя метод ActorSystem scheduler.schedule, передав в него начальную задержку (после которой в первый раз будет отправлено сообщение), затем интервал, с которым сообщение должно быть отправлено, получателя (в нашем случае, мы хотим, чтобы оно было отправлено самому актору, поэтому мы используем self), и сообщение для отправки.</p>
+</li>
+<li><p>когда актор прекращает работу, мы также должны отменить планировщик, иначе, отправки сообщений каждые 5 минут, продолжатся в пустоту</p>
+</li>
+<li><p>как для любого актора, реализация того, что должно быть выполнено повторно происходит в методе receive - в нашем случае, мы только обрабатываем сообщения вида SYNC_ALL_ORDERS</p>
+</li>
+<li><p>одинственно важной вещью, в данный момент, является обработка ошибки: я бы рекомендовал выполнять любой код внутри блока try-catch, как показано выше - в данном случае было бы излишним использовать стратегию обработки ошибок Akka, и мы не хотим разрушать наш планировщик, если одна из синхронизаций пойдет не так.</p>
+</li>
+</ul>
+<p>Теперь, единственной вещью, которую мы должны сделать,  это привести механизм в движение. Для приложения Play, хорошим местом для этого был бы имеющий дурную репутацию <a href="http://www.playframework.com/documentation/2.2.x/ScalaGlobal" target="_blank" rel="external">Global</a>:</p>
+<figure class="highlight scala"><figcaption><span>CockooClockInit.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClockInit.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">Global</span> <span class="keyword">extends</span> <span class="title">GlobalSettings</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onStart</span></span>(app: <span class="type">Application</span>) {</div><div class="line">    <span class="type">Akka</span>.system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">ScheduledOrderSynchronizer</span>), name = <span class="string">"orderSynchronizer"</span>)</div><div class="line">  }</div></pre></td></tr></table></figure>
+<p>Вот и все! Наши часы с кукушкой готовы бить каждые 5 минут.</p>
+<p>Примечание: API планировщика хорошо подходит для задач, которые подразумевают повторение, и менее для задач, которые должны выполниться в определенное время или дату. Однако, этого можно добиться с API путем расчета времени между инициализацией планировщика и запланированным временем. Для этих случаев, я использую библиотеку <a href="https://github.com/nscala-time/nscala-time" target="_blank" rel="external">nscala-time</a>, которая является оберткой поверх отличной библиотеки <a href="http://www.joda.org/joda-time/" target="_blank" rel="external">Joda Time</a>.</p>
+<h2 id="Пакетный-процессор"><a href="#Пакетный-процессор" class="headerlink" title="Пакетный процессор"></a>Пакетный процессор</h2><p>Одной вещью, которую я нахожу себя делающим довольно часто с Akka, является массовое распараллеливание данной задачи, которая часто связана  Это может быть простая конфигурация, что включает в себя только одного наблюдателя и много рабочих одного вида, или чем-то более сложным с участием упорядочивающего конвейера.</p>
+<img src="/blog/downloads/images/posts/a-handful-akka-techniques/simple-batch.png">
+<p>Один наблюдатель и его армия рабочих</p>
+<img src="/blog/downloads/images/posts/a-handful-akka-techniques/multi-step-batch.png">
+<p>Многоступенчатая структура</p>
+<p>В большинстве случаев эта разновидность шаблона включает производителя (база данных, такая как MongoDB, MySQL, BaseX, Amazon SimpleDB; гигабайтный XML файл, и т.д.), из которого элементы должны быть собраны и отправлены для обработки.</p>
+<p>Давайте посмотрим на примере простого наблюдателя - цепочки рабочих. Мы сделаем несколько предположений для этого примера:</p>
+<ul>
+<li><p>время для получения нового пакета данных несущественно, так что мы не заинтересованы в оптимизации процесса получения новых данных раньше времени</p>
+</li>
+<li><p>наша JVM имеет приличный объем доступной памяти, так что рабочие способны ставить в очередь все элементы своего почтового ящика</p>
+</li>
+</ul>
+<p>Примечание: Код намеренно оставлен ​​абстрактным, так как мы не заинтересованы в том, как данные будут получены из источника или обработаны, но в том, что произойдет с ними.</p>
+<figure class="highlight scala"><figcaption><span>BatchProcessor.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/BatchProcessor.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> akka.actor.{ <span class="type">Props</span>, <span class="type">Actor</span> }</div><div class="line"><span class="keyword">import</span> akka.event.<span class="type">Logging</span></div><div class="line"><span class="keyword">import</span> akka.routing.<span class="type">RoundRobinRouter</span></div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BatchProcessor</span>(<span class="params">dataSetId: <span class="type">Long</span></span>) <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">val</span> log = <span class="type">Logging</span>(context.system, <span class="string">"application"</span>)</div><div class="line"></div><div class="line">  <span class="keyword">val</span> workers = context.actorOf(<span class="type">Props</span>[<span class="type">ItemProcessingWorker</span>].withRouter(<span class="type">RoundRobinRouter</span>(<span class="number">100</span>)))</div><div class="line"></div><div class="line">  <span class="keyword">var</span> totalItemCount = <span class="number">-1</span></div><div class="line">  <span class="keyword">var</span> currentBatchSize: <span class="type">Int</span> = <span class="number">0</span></div><div class="line">  <span class="keyword">var</span> currentProcessedItemsCount: <span class="type">Int</span> = <span class="number">0</span></div><div class="line">  <span class="keyword">var</span> currentProcessingErrors: <span class="type">List</span>[<span class="type">ItemProcessingError</span>] = <span class="type">List</span>.empty</div><div class="line"></div><div class="line">  <span class="keyword">var</span> allProcessedItemsCount = <span class="number">0</span></div><div class="line">  <span class="keyword">var</span> allProcessingErrors: <span class="type">List</span>[<span class="type">ItemProcessingError</span>] = <span class="type">List</span>.empty</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">ProcessBatch</span> =&gt;</div><div class="line">      <span class="keyword">if</span> (totalItemCount == <span class="number">-1</span>) {</div><div class="line">        totalItemCount = totalItems</div><div class="line">        log.info(<span class="string">s"Starting to process set with ID <span class="subst">$dataSetId</span>, we have <span class="subst">$totalItemCount</span> items to go through"</span>)</div><div class="line">      }</div><div class="line">      <span class="keyword">val</span> batch = fetchBatch</div><div class="line">      processBatch(batch)</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">ProcessedOneItem</span> =&gt;</div><div class="line">      currentProcessedItemsCount = currentProcessedItemsCount + <span class="number">1</span></div><div class="line">      continueProcessing()</div><div class="line"></div><div class="line">    <span class="keyword">case</span> error @ <span class="type">ItemProcessingError</span>(_, _, _) =&gt;</div><div class="line">      currentProcessingErrors = error :: currentProcessingErrors</div><div class="line">      continueProcessing()</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">processBatch</span></span>(batch: <span class="type">List</span>[<span class="type">BatchItem</span>]) = {</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (batch.isEmpty) {</div><div class="line">      log.info(<span class="string">s"Done migrating all items for data set <span class="subst">$dataSetId</span>. <span class="subst">$totalItems</span> processed items, we had <span class="subst">${allProcessingErrors.size}</span> errors in total"</span>)</div><div class="line">    } <span class="keyword">else</span> {</div><div class="line">      <span class="comment">// reset processing state for the current batch</span></div><div class="line">      currentBatchSize = batch.size</div><div class="line">      allProcessedItemsCount = currentProcessedItemsCount + allProcessedItemsCount</div><div class="line">      currentProcessedItemsCount = <span class="number">0</span></div><div class="line">      allProcessingErrors = currentProcessingErrors ::: allProcessingErrors</div><div class="line">      currentProcessingErrors = <span class="type">List</span>.empty</div><div class="line"></div><div class="line">      <span class="comment">// distribute the work</span></div><div class="line">      batch foreach { item =&gt;</div><div class="line">        workers ! item</div><div class="line">      }</div><div class="line">    }</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">continueProcessing</span></span>() = {</div><div class="line"></div><div class="line">    <span class="keyword">val</span> itemsProcessed = currentProcessedItemsCount + currentProcessingErrors.size</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (itemsProcessed &gt; <span class="number">0</span> &amp;&amp; itemsProcessed % <span class="number">100</span> == <span class="number">0</span>) {</div><div class="line">      log.info(<span class="string">s"Processed <span class="subst">$itemsProcessed</span> out of <span class="subst">$currentBatchSize</span> with <span class="subst">${currentProcessingErrors.size}</span> errors"</span>)</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (itemsProcessed == currentBatchSize) {</div><div class="line">      self ! <span class="type">ProcessBatch</span></div><div class="line">    }</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">totalItems</span></span>: <span class="type">Int</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">fetchBatch</span></span>: <span class="type">List</span>[<span class="type">BatchItem</span>]</div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemProcessingWorker</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line">    <span class="keyword">case</span> <span class="type">ProcessItem</span>(item) =&gt;</div><div class="line">      <span class="keyword">try</span> {</div><div class="line">        process(item) <span class="keyword">match</span> {</div><div class="line">          <span class="keyword">case</span> <span class="type">None</span> =&gt; sender ! <span class="type">ProcessedOneItem</span></div><div class="line">          <span class="keyword">case</span> <span class="type">Some</span>(error) =&gt; sender ! error</div><div class="line">        }</div><div class="line">      } <span class="keyword">catch</span> {</div><div class="line">        <span class="keyword">case</span> t: <span class="type">Throwable</span> =&gt;</div><div class="line">          sender ! <span class="type">ItemProcessingError</span>(item.id, <span class="string">"Unhandled error"</span>, <span class="type">Some</span>(t))</div><div class="line">      }</div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">process</span></span>(item: <span class="type">BatchItem</span>): <span class="type">Option</span>[<span class="type">ItemProcessingError</span>]</div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">ProcessBatch</span></span></div><div class="line"><span class="class"><span class="keyword">trait</span> <span class="title">BatchItem</span> </span>{</div><div class="line">  <span class="keyword">val</span> id: <span class="type">Int</span></div><div class="line">}</div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ProcessItem</span>(<span class="params">item: <span class="type">BatchItem</span></span>)</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">ProcessedOneItem</span></span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemProcessingError</span>(<span class="params">itemId: <span class="type">Int</span>, message: <span class="type">String</span>, error: <span class="type">Option</span>[<span class="type">Throwable</span>]</span>)</span></div></pre></td></tr></table></figure>
+<p>Давайте пройдемся по примеру шаг за шагом:</p>
+<ul>
+<li><p>у нас есть наблюдатель (BatchProcessor), определение рабочего (ItemProcessingWorker) и набор сообщений (ProcessBatch, ProcessItem, ProcessedOneItem, и т.д.)</p>
+</li>
+<li><p>конструктор BatchProcessor принимает в качестве параметра ID набора данных, который мы хотим обработать (при условии, например, что данные живут в базе данных и имеют идентификатор). Новый BatchProcessor должен быть создан для каждого набора, который мы хотим обработать</p>
+</li>
+<li><p>BatchProcessor создает несколько экземпляров дочерних рабочих с помощью <a href="http://doc.akka.io/docs/akka/2.2.3/scala/routing.html" target="_blank" rel="external">RoundRobinRouter</a></p>
+</li>
+<li><p>наблюдатель имеет несколько членов, которые следят за состоянием обработки. Он также отслеживает все имеющие место ItemProcessingError</p>
+<p>затем механизм работает следующим образом:</p>
+<ul>
+<li><p>чтобы начать, BatchProcessor должен получить от клиента сообщение ProcessBatch</p>
+</li>
+<li><p>затем он извлекает первую группу из источника и передает его в метод processBatch. Если это первый раз, когда он запускается он будет так же показывать, как много элементов есть в общем</p>
+</li>
+<li><p>processBatch инициализирует состояние для этой группы сбрасывая счетчики и устанавливая размер пакета, и затем переходит к распределению работы рабочим с помощью batch foreach { item =&gt; workers ! item }.</p>
+</li>
+<li><p>когда элемент обработан, актор-рабочий отвечает сообщением ProcessedOneItem или ItemProcessingError в случае неудачи. Мы используем эту информацию, чтобы отслеживать прогресс обработки.</p>
+</li>
+<li><p>метод continueProcessing сообщает прогресс для каждых 100 обработанных элементов (на практике, это должно быть адаптированно к размеру имеющихся данных). когда текущий пакет будет полностью обработан (сумма успешных и провальных элементов равна размеру текущего пакета), он отправляет наблюдателя в другой метод ProcessBatch. Нереализованный метод fetchBatch может использовать счетчики для того, чтобы знать, какое смещение использовать для получения следующей группы элементов.</p>
+</li>
+<li><p>наконец, когда не осталось данных для обработки, метод processBatch сообщает нам об этом и обработка завершается.</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>Способ, представленный выше, конечно, весьма общий. На практике процесс, часто, должен быть доработан или может быть адаптирован, чтобы быть более производительным для конкретного сценария использования. Природа источника данных часто определяет, как работают составляющие. Тем не менее, это одна из вещей, которая мне нравится в Akka - она только предоставляет минимальную инфраструктуру и оставляет на усмотрение разработчика право выбирать, какой механизм будет использован для реализации конвейера. Некоторые улучшения, которые вероятно нужны в реальном приложении, включают:</p>
+<ul>
+<li><p>обработку ошибок использующую стратегии наблюдателя Akka. Прямо сейчас, наш рабочий очень прост, и имеет выражение try - catch вокруг метода process.  Но мы не по-настоящему восстанавливаемся после ошибок, мы просто позволяем им упасть и сообщить количество имеющихся у нас ошибок. Это может работать хорошо, если эти шибки являются фатальными, но на практике они могут стоить попытки обработать некоторые элементы из элементов.</p>
+</li>
+<li><p>информирование клиента, что наша работа выполнена. Это может быть простым, как сохранение ссылки на актор , при получении первого сообщения ProcessBatch, и отправка сообщения WorkDone, когда все элементы обработаны (не пытайтесь отправлять это сообщение по ссылке sender потому что, к тому времени когда вся работа выполнится, скорее всего, отправителем сообщения будет один из дочерних акторов)</p>
+</li>
+<li><p>наличие более хороших показателей относительно обработки, такие как скорость обработки. Я часто использую <a href="http://metrics.codahale.com/" target="_blank" rel="external">библиотеку метрик Кода Хейла</a> для этой цели.</p>
+</li>
+</ul>
+<h2 id="Обратное-давление-бедняка"><a href="#Обратное-давление-бедняка" class="headerlink" title="Обратное давление бедняка"></a>Обратное давление бедняка</h2><p>Если вы являетесь членом команды Akka, пропустите этот раздел. Для остальной части человечества, эта тема имеет непосредственное отношение к одному предположению, что мы сделали в предыдущем примере: “наша JVM имеет приличный объем доступной памяти, так что  рабочие могут ставить в очередь все элементы своего почтового ящика”. На самом деле, это не всегда так. Тем не менее, если вы будете продолжать получать данные от производителя и передавать их рабочим, вы в конечном итоге исчерпаете всю память: по-умолчанию, Akka использует <a href="http://doc.akka.io/api/akka/2.2.3/akka/dispatch/UnboundedMailbox.html" target="_blank" rel="external">UnboundedMailbox</a>, который будет продолжать заполняться.</p>
+<p>В приведенном выше примере, эту проблему легко исправить, потому что мы только тогда переходим к следующей группе, когда все элементы из текущей были обработаны, что означает, что выбора подходящего размера пакета достаточно. Тем не менее, мы имели право выбрать другую реализацию, которая извлекает данные из источника постоянно, потому что делать как сейчас несколько дороже, или потому, что вы заинтересованы в работе с системой на максимальной мощности.</p>
+<p>В такой ситуации, нам нужны средства, чтобы снизить скорость наблюдателя. Эта концепция также известна как обратное давление, и я приглашаю вас <a href="http://blog.abhinav.ca/blog/2014/01/13/akka-and-backpressure/" target="_blank" rel="external">прочитать, как правильно ее реализовать</a>. Иногда, однако, вы можете не быть заинтересованы в оптимальном решении проблемы обратного давления, и в этом случае, может быть нормальным нарушить основную директиву Akka: <strong>не допускайте блокировок внутри актора</strong>.</p>
+<img src="/blog/downloads/images/posts/a-handful-akka-techniques/88vce.jpg">
+<p>Оно может быть не оптимальным, не элегантным, но я нашел этот механизм работающим довольно хорошо, при условии, что у вас есть общее представление о ограничении памяти приложения, и вы не заинтересованы в динамичном масштабировании.</p>
+<p>Для того, чтобы иметь возможность снизить скорость надлежащим образом, мы должны отделить наблюдателя и производителя данных. Это, то как может выглядеть реализация:</p>
+<figure class="highlight scala"><figcaption><span>PoorManBackPreassure.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/PoorManBackPreassure.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> akka.actor.{ <span class="type">Props</span>, <span class="type">Actor</span> }</div><div class="line"><span class="keyword">import</span> akka.event.<span class="type">Logging</span></div><div class="line"><span class="keyword">import</span> akka.routing.<span class="type">RoundRobinRouter</span></div><div class="line"><span class="keyword">import</span> akka.pattern.ask</div><div class="line"><span class="keyword">import</span> akka.util.<span class="type">Timeout</span></div><div class="line"><span class="keyword">import</span> scala.concurrent.<span class="type">Await</span></div><div class="line"><span class="keyword">import</span> scala.concurrent.duration._</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Processor</span>(<span class="params">dataSetId: <span class="type">Long</span></span>) <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">val</span> log = <span class="type">Logging</span>(context.system, <span class="string">"application"</span>)</div><div class="line"></div><div class="line">  <span class="keyword">val</span> workers = context.actorOf(<span class="type">Props</span>[<span class="type">ItemProcessingWorker</span>].withRouter(<span class="type">RoundRobinRouter</span>(<span class="number">100</span>)))</div><div class="line">  <span class="keyword">val</span> producer = context.actorOf(<span class="type">Props</span>[<span class="type">DataProducer</span>], name = <span class="string">"dataProducer"</span>)</div><div class="line"></div><div class="line">  <span class="keyword">var</span> totalItemCount = <span class="number">-1</span></div><div class="line">  <span class="keyword">var</span> currentItemCount = <span class="number">0</span></div><div class="line"></div><div class="line">  <span class="keyword">var</span> allProcessedItemsCount = <span class="number">0</span></div><div class="line">  <span class="keyword">var</span> allProcessingErrors: <span class="type">List</span>[<span class="type">ItemProcessingError</span>] = <span class="type">List</span>.empty</div><div class="line"></div><div class="line">  <span class="keyword">val</span> <span class="type">MAX_LOAD</span> = <span class="number">50</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">Process</span> =&gt;</div><div class="line">      <span class="keyword">if</span> (totalItemCount == <span class="number">-1</span>) {</div><div class="line">        totalItemCount = totalItems</div><div class="line">        log.info(<span class="string">s"Starting to process set with ID <span class="subst">$dataSetId</span>, we have <span class="subst">$totalItemCount</span> items to go through"</span>)</div><div class="line">      }</div><div class="line">      <span class="keyword">val</span> index = allProcessedItemsCount + allProcessingErrors.size</div><div class="line">      <span class="keyword">if</span> (currentItemCount &lt; <span class="type">MAX_LOAD</span>) {</div><div class="line">        producer ! <span class="type">FetchData</span>(index)</div><div class="line">      }</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">Data</span>(items) =&gt;</div><div class="line">      processBatch(items)</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">GetLoad</span> =&gt;</div><div class="line">      sender ! currentItemCount</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">ProcessedOneItem</span> =&gt;</div><div class="line">      allProcessedItemsCount = allProcessedItemsCount + <span class="number">1</span></div><div class="line">      currentItemCount = currentItemCount - <span class="number">1</span></div><div class="line">      continueProcessing()</div><div class="line"></div><div class="line">    <span class="keyword">case</span> error @ <span class="type">ItemProcessingError</span>(_, _, _) =&gt;</div><div class="line">      allProcessingErrors = error :: allProcessingErrors</div><div class="line">      currentItemCount = currentItemCount - <span class="number">1</span></div><div class="line">      continueProcessing()</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">processBatch</span></span>(batch: <span class="type">List</span>[<span class="type">Item</span>]) = {</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (batch.isEmpty) {</div><div class="line">      log.info(<span class="string">s"Done migrating all items for data set <span class="subst">$dataSetId</span>. <span class="subst">$totalItems</span> processed items, we had <span class="subst">${allProcessingErrors.size}</span> errors in total"</span>)</div><div class="line">    } <span class="keyword">else</span> {</div><div class="line">      <span class="comment">// distribute the work</span></div><div class="line">      batch foreach { item =&gt;</div><div class="line">        workers ! item</div><div class="line">        currentItemCount = currentItemCount + <span class="number">1</span></div><div class="line">      }</div><div class="line">    }</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">continueProcessing</span></span>() = {</div><div class="line"></div><div class="line">    <span class="keyword">val</span> itemsProcessed = allProcessedItemsCount + allProcessingErrors.size</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (itemsProcessed &gt; <span class="number">0</span> &amp;&amp; itemsProcessed % <span class="number">100</span> == <span class="number">0</span>) {</div><div class="line">      log.info(<span class="string">s"Processed <span class="subst">$itemsProcessed</span> out of <span class="subst">$totalItems</span> with <span class="subst">${allProcessingErrors.size}</span> errors"</span>)</div><div class="line">    }</div><div class="line"></div><div class="line">    self ! <span class="type">Process</span></div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">totalItems</span></span>: <span class="type">Int</span></div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">DataProducer</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">private</span> <span class="keyword">val</span> <span class="type">MAX_LOAD</span> = <span class="number">50</span></div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line"></div><div class="line">    <span class="keyword">case</span> <span class="type">FetchData</span>(currentIndex) =&gt;</div><div class="line">      throttleDown()</div><div class="line">      sender ! <span class="type">Data</span>(fetchBatch(currentIndex))</div><div class="line"></div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">throttleDown</span></span>(): <span class="type">Unit</span> = {</div><div class="line">    <span class="keyword">implicit</span> <span class="keyword">val</span> timeout = <span class="type">Timeout</span>(<span class="number">5.</span>seconds)</div><div class="line">    <span class="keyword">val</span> eventuallyLoad = context.parent ? <span class="type">GetLoad</span></div><div class="line">    <span class="keyword">try</span> {</div><div class="line">      <span class="keyword">val</span> load = <span class="type">Await</span>.result(eventuallyLoad, <span class="number">5.</span>seconds)</div><div class="line"></div><div class="line">      <span class="keyword">if</span> (load.asInstanceOf[<span class="type">Int</span>] &gt; <span class="type">MAX_LOAD</span>) {</div><div class="line">        <span class="type">Thread</span>.sleep(<span class="number">5000</span>)</div><div class="line">        throttleDown()</div><div class="line">      }</div><div class="line"></div><div class="line">    } <span class="keyword">catch</span> {</div><div class="line">      <span class="keyword">case</span> t: <span class="type">Throwable</span> =&gt;</div><div class="line">        <span class="comment">// we most likely have timed out - wait a bit longer</span></div><div class="line">        throttleDown()</div><div class="line">    }</div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">fetchBatch</span></span>(currentIndex: <span class="type">Int</span>): <span class="type">List</span>[<span class="type">Item</span>]</div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemProcessingWorker</span> <span class="keyword">extends</span> <span class="title">Actor</span> </span>{</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line">    <span class="keyword">case</span> <span class="type">ProcessItem</span>(item) =&gt;</div><div class="line">      <span class="keyword">try</span> {</div><div class="line">        process(item) <span class="keyword">match</span> {</div><div class="line">          <span class="keyword">case</span> <span class="type">None</span> =&gt; sender ! <span class="type">ProcessedOneItem</span></div><div class="line">          <span class="keyword">case</span> <span class="type">Some</span>(error) =&gt; sender ! error</div><div class="line">        }</div><div class="line">      } <span class="keyword">catch</span> {</div><div class="line">        <span class="keyword">case</span> t: <span class="type">Throwable</span> =&gt;</div><div class="line">          sender ! <span class="type">ItemProcessingError</span>(item.id, <span class="string">"Unhandled error"</span>, <span class="type">Some</span>(t))</div><div class="line">      }</div><div class="line">  }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> <span class="title">process</span></span>(item: <span class="type">Item</span>): <span class="type">Option</span>[<span class="type">ItemProcessingError</span>]</div><div class="line"></div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">Process</span></span></div><div class="line"><span class="class"><span class="keyword">trait</span> <span class="title">Item</span> </span>{</div><div class="line">  <span class="keyword">val</span> id: <span class="type">Int</span></div><div class="line">}</div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">FetchData</span>(<span class="params">currentIndex: <span class="type">Int</span></span>)</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Data</span>(<span class="params">items: <span class="type">List</span>[<span class="type">Item</span>]</span>)</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">GetLoad</span></span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ProcessItem</span>(<span class="params">item: <span class="type">Item</span></span>)</span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">object</span> <span class="title">ProcessedOneItem</span></span></div><div class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">ItemProcessingError</span>(<span class="params">itemId: <span class="type">Int</span>, message: <span class="type">String</span>, error: <span class="type">Option</span>[<span class="type">Throwable</span>]</span>)</span></div></pre></td></tr></table></figure>
+<p>Так как же это работает? Давайте взглянем поближе:</p>
+<ul>
+<li><p>мы больше не извлекаем данные в группы - или точнее, мы извлекаем их в группы, но мы не ждем завершения обработки группы, чтобы извлечь больше данных. Таким образом, мы не отслеживаем статус группы.</p>
+</li>
+<li><p>мы отслеживаем текущее количество элементов, которые были обработаны через счетчик currentItemCount в Processor, который увеличивается каждый раз, когда посылается элемент и уменьшается каждый раз, когда сообщается успех или неудача.</p>
+</li>
+<li><p>данные больше не извлекаются непосредственно в Processor, но вместо этого извлекаются в его дочерний класс называемый DataProducer . Каждый раз, когда элемент был обработан, Processor посылает себе сообщение Process, который впоследствии спрашивает производителя о дополнительных данных - если счетчик нашего текущего элемента уже не будет выше максимальной нагрузки мы можем справиться</p>
+</li>
+<li><p>теперь к самому интересному: DataProducer не будет получать новые данные сразу же, вместо этого, он проверит вместе с наблюдателем, какова текущая нагрузка. Если она выше, чем максимально допустимая (50 элементов в нашем примере, потому что мы, например, имеем дело с изображениями в высоким разрешении или чем-то подобным, что занимает много памяти) он будет ждать в течение 5 секунд и проверит снова, пока нагрузка снова не станет приемлемой. Только после этого он отправит новые данные в Processor , который продолжит делать свою работу, пока не останется никаких данных.</p>
+</li>
+</ul>
+<p>Некоторые комментарии об этой технике:</p>
+<ul>
+<li><p>как говорится, нужно иметь хорошее ощущение того, каким должен быть максимум. Этот механизм в отличии от всех остальных, динамичный и не будет работать, если элементы весьма гетерогенны (в том смысле, что их обработка занимает очень разное количество времени)</p>
+</li>
+<li><p>она лучше подходит, чтобы ждать кучу элементов, которые будут обработаны, прежде чем запросить новую партию, в зависимости от случая</p>
+</li>
+<li><p>обработка ошибок в приведенном выше примере должна быть улучшена для использования в реальной жизни</p>
+</li>
+</ul>
+<p>Есть много других механизмов, для распределения работы, которые могут быть легко реализованы с Akka. Еще одним механизмом, который я бы хотел попробовать, когда получаю возможность работать, является кража работы, где рабочий получает активную роль получения работы, вместо того, чтобы их иметь, она отправляются ему.</p>
+<h2 id="Подводные-камни"><a href="#Подводные-камни" class="headerlink" title="Подводные камни"></a>Подводные камни</h2><p>За время моей работы с Akka я натолкнулся на несколько подводных камней. Они в основном - итог не достаточно хорошего чтения документации, но я видел, как другие делают некоторые из этих ошибок, так что я думаю, будет полезным перечислить их здесь.</p>
+<h3 id="Создание-слишком-многих-корневых-акторов"><a href="#Создание-слишком-многих-корневых-акторов" class="headerlink" title="Создание слишком многих корневых акторов"></a>Создание слишком многих корневых акторов</h3><p>Корневые акторы, созданные непосредственно через ActorSystem, вместо context, следует использовать с осторожностью: создание таких акторов дорого, т.к. требует синхронизации на защитном уровне. Кроме того, в большинстве случаев, вам не нужно иметь много корневых акторов, а скорее всего один актор для своей задачи, который имеет ряд дочерних.</p>
+<h3 id="Заключение-future"><a href="#Заключение-future" class="headerlink" title="Заключение future"></a>Заключение future</h3><p>Это ошибка, которую легко допустить, <a href="http://helenaedelson.com/?p=879" target="_blank" rel="external">подробно описанная в этой статье</a>. Давайте рассмотрим следующий пример:</p>
+<figure class="highlight scala"><figcaption><span>ClosingOverFuture.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/ClosingOverFuture.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line">  <span class="keyword">case</span> <span class="type">ComputeResult</span>(itemId: <span class="type">Long</span>) =&gt;</div><div class="line">    computeResult(itemId).map { result =&gt;</div><div class="line">      <span class="comment">// gotcha!</span></div><div class="line">      sender ! result</div><div class="line">    }</div><div class="line">}</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">computeResult</span></span>(itemId: <span class="type">Long</span>): <span class="type">Future</span>[<span class="type">Int</span>] = ???</div></pre></td></tr></table></figure>
+<p>Так в чем же проблема? computeResult производит Future , при этом переключается на другой контекст выполнения и освобождает основной поток. Это означает, что другое сообщение ComputeResult может прийти внутрь, и заменить ссылку sender. Тогда, когда первый future завершится, мы можем ответить не тому отправителю.</p>
+<p>Легко исправить это, сохранив отправителя в val вот так:</p>
+<figure class="highlight scala"><figcaption><span>ClosingOverFutureFix.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/ClosingOverFutureFix.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">receive</span> </span>= {</div><div class="line">  <span class="keyword">case</span> <span class="type">ComputeResult</span>(itemId: <span class="type">Long</span>) =&gt;</div><div class="line">    <span class="keyword">val</span> originalSender = sender</div><div class="line">    computeResult(itemId).map { result =&gt;</div><div class="line">      originalSender ! result</div><div class="line">    }</div><div class="line">}</div></pre></td></tr></table></figure>
+<h3 id="Неверное-понимание-смысла-Future-andThen"><a href="#Неверное-понимание-смысла-Future-andThen" class="headerlink" title="Неверное понимание смысла Future.andThen"></a>Неверное понимание смысла Future.andThen</h3><p>Это в основном связано скорее с futures, чем с акторами, но я столкнулся с этим при смешивании обоих парадигм. <a href="http://docs.scala-lang.org/overviews/core/futures.html" target="_blank" rel="external">Future API</a> имеет метод andThen”, используемый исключительно для целей побочного действия”. Другими словами, он не будет трансформировать future и свяжет себя с ним, но скорее будет выполнен независимо.</p>
+<p>Я ошибался полагая, что andThen вернет новый, преобразованный, Future, поэтому я попытался выполнить следующие действия:</p>
+<figure class="highlight scala"><figcaption><span>FutureAndThen.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/FutureAndThen.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">upload.andThen {</div><div class="line">  <span class="keyword">case</span> <span class="type">Success</span>(s) =&gt; {</div><div class="line">    <span class="type">FileUploadSuccess</span>(item, s)</div><div class="line">  }</div><div class="line">  <span class="keyword">case</span> <span class="type">Failure</span>(t) =&gt;</div><div class="line">    <span class="type">FileUploadFailure</span>(item, <span class="type">Some</span>(t))</div><div class="line">  } pipeTo originalSender</div></pre></td></tr></table></figure>
+<p>pipeTo является довольно мощным инструментом в инструментарий Akka, который позволяет отправлять результат future актору (под капотом он создает анонимный актор, который ждет завершения future).</p>
+<p>Правильной реализацией будет:</p>
+
+<h2 id="Заключение"><a href="#Заключение" class="headerlink" title="Заключение"></a>Заключение</h2><p>В заключении я хотел бы повториться, что Akka реально полезный инструмент, чтобы иметь его вашем наборе, и я думаю, что он собирается остаться таким гораздо дольше, поэтому я могу только посоветовать любому, кто этого еще не сделал, пойти и попробовать его (даже если вы работаете с Java, для вас есть Java API). Как мы и говорили, еще одной приятной парадигмой, которая станет стандартизированной, являются <a href="http://www.reactive-streams.org/" target="_blank" rel="external">реактивные потоки</a>, которые имеют дело с обратным давлением как с составной частью концепции.</p>
+<p><a href="http://manuel.bernhardt.io/2014/04/23/a-handful-akka-techniques/" target="_blank" rel="external">Оригинал</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html" data-id="cizm6u0zv00002pgi32oaofv4" class="article-share-link">Share</a>
+      
+        <a href="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/blog/2014/03/24/pimp-my-git.html" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Pimp My Git</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<section id="comments">
+  <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  </div>
+</section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/git/">git</a></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/">scala</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/">akka</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/rlp/">rlp</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/akka/rlp/translations/">translations</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/">java</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/translations/">translations</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/java/translations/interview/">interview</a></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/translations/">translations</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/blog/categories/scala/translations/interview/">interview</a></li></ul></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/faq/">faq</a></li><li class="tag-list-item"><a class="tag-list-link" href="/blog/tags/git/">git</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/blog/tags/faq/" style="font-size: 10px;">faq</a> <a href="/blog/tags/git/" style="font-size: 10px;">git</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/05/">May 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/blog/archives/2014/03/">March 2014</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/blog/2014/05/09/a-handful-akka-techniques.html">Полезные техники Akka</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/24/pimp-my-git.html">Pimp My Git</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html">Пока оно компилируется - Крис Маршалл</a>
+          </li>
+        
+          <li>
+            <a href="/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html">Java и Scala - Бывшие конкуренты вскоре могут стать лучшими друзьями</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2017 seth2810<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/blog/" class="mobile-nav-link">Home</a>
+  
+    <a href="/blog/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+<script>
+  var disqus_shortname = 'seth2810-blog';
+  
+  var disqus_url = 'http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html';
+  
+  (function(){
+    var dsq = document.createElement('script');
+    dsq.type = 'text/javascript';
+    dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/blog/fancybox/jquery.fancybox.css">
+  <script src="/blog/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/blog/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
