@@ -35,7 +35,7 @@
       </h1>
       
         <h2 id="subtitle-wrap">
-          <a href="/blog/" id="subtitle">Yet another software developer blog.</a>
+          <a href="/blog/" id="subtitle">Yet another software developer blog</a>
         </h2>
       
     </div>
@@ -109,7 +109,7 @@
 </li>
 </ul>
 <p>Теперь, единственной вещью, которую мы должны сделать,  это привести механизм в движение. Для приложения Play, хорошим местом для этого был бы имеющий дурную репутацию <a href="http://www.playframework.com/documentation/2.2.x/ScalaGlobal" target="_blank" rel="external">Global</a>:</p>
-<figure class="highlight scala"><figcaption><span>CockooClockInit.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClockInit.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">Global</span> <span class="keyword">extends</span> <span class="title">GlobalSettings</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onStart</span></span>(app: <span class="type">Application</span>) {</div><div class="line">    <span class="type">Akka</span>.system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">ScheduledOrderSynchronizer</span>), name = <span class="string">"orderSynchronizer"</span>)</div><div class="line">  }</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><figcaption><span>CockooClockInit.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClockInit.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">Global</span> <span class="keyword">extends</span> <span class="title">GlobalSettings</span> </span>{</div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onStart</span></span>(app: <span class="type">Application</span>) {</div><div class="line">    <span class="type">Akka</span>.system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">ScheduledOrderSynchronizer</span>), name = <span class="string">"orderSynchronizer"</span>)</div><div class="line">  }</div><div class="line">}</div></pre></td></tr></table></figure>
 <p>Вот и все! Наши часы с кукушкой готовы бить каждые 5 минут.</p>
 <p>Примечание: API планировщика хорошо подходит для задач, которые подразумевают повторение, и менее для задач, которые должны выполниться в определенное время или дату. Однако, этого можно добиться с API путем расчета времени между инициализацией планировщика и запланированным временем. Для этих случаев, я использую библиотеку <a href="https://github.com/nscala-time/nscala-time" target="_blank" rel="external">nscala-time</a>, которая является оберткой поверх отличной библиотеки <a href="http://www.joda.org/joda-time/" target="_blank" rel="external">Joda Time</a>.</p>
 <h2 id="Пакетный-процессор"><a href="#Пакетный-процессор" class="headerlink" title="Пакетный процессор"></a>Пакетный процессор</h2><p>Одной вещью, которую я нахожу себя делающим довольно часто с Akka, является массовое распараллеливание данной задачи, которая часто связана  Это может быть простая конфигурация, что включает в себя только одного наблюдателя и много рабочих одного вида, или чем-то более сложным с участием упорядочивающего конвейера.</p>
@@ -209,7 +209,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html" data-id="cizm6u0zv00002pgi32oaofv4" class="article-share-link">Share</a>
+      <a data-url="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html" data-id="ciznxsjim0000qovm1t5cc5zx" class="article-share-link">Share</a>
       
         <a href="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html#disqus_thread" class="article-comment-link">Comments</a>
       
@@ -221,12 +221,174 @@
 
 
   
-
-
-  <nav id="page-nav">
+    <article id="post-pimp-my-git" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/03/24/pimp-my-git.html" class="article-date">
+  <time datetime="2014-03-24T07:13:47.000Z" itemprop="datePublished">24/03/2014</time>
+</a>
     
-    <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="page-number" href="/blog/page/3/">3</a><a class="page-number" href="/blog/page/4/">4</a><a class="extend next" rel="next" href="/blog/page/2/">Next &raquo;</a>
-  </nav>
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/git/">git</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/03/24/pimp-my-git.html">Pimp My Git</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Данный пост не претендует на статус <a href="git-scm.com/book/ru">руководства</a>, а является лишь сборником usecases и workflow используемых автором при ежедневной работе с git, и будет пополняться и обновляться с течением времени.</p>
+<h2 id="gitconfig"><a href="#gitconfig" class="headerlink" title=".gitconfig"></a>.gitconfig</h2><p>Любая работа с git начинается с настройки. Но не все разработчики задаются целью потратить больше времени и немного подкрутив git, сократить себе в дальнейшем время при разработке.<br>Так уж исторически сложилось, что я не являюсь сторонником использования какого-либо GUI, потому, что большинство времени провожу на удаленном сервере, и считаю, что git вполне позволяет реализовать все недостающие возможности стандартными средствами.<br>Чтож, приступим к прокачке, для начала улучшив стандартный и скучный <code>git log</code> добавив к нему графическое отображение состояния веток, и пропишем alias’ы для основных комманд git.<br>Данную конфигурацию желательно поместить в ~/.gitconfig, чтобы в дальнейшем использовать данные настройки в любом репозитории git:</p>
+<figure class="highlight plain"><figcaption><span>.gitignore</span><a href="/blog/downloads/code/posts/pimp-my-git/.gitignore">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line">[color]</div><div class="line">  ui = auto</div><div class="line">  branch = never</div><div class="line"></div><div class="line">[color &quot;branch&quot;]</div><div class="line">  current = yellow reverse</div><div class="line">  local = yellow</div><div class="line">  remote = green</div><div class="line"></div><div class="line">[color &quot;diff&quot;]</div><div class="line">  meta = yellow bold</div><div class="line">  frag = magenta bold</div><div class="line">  old = red bold</div><div class="line">  new = green bold</div><div class="line"></div><div class="line">[color &quot;status&quot;]</div><div class="line">  added = yellow</div><div class="line">  changed = green</div><div class="line">  untracked = cyan</div><div class="line"></div><div class="line">[alias]</div><div class="line">  st = status</div><div class="line">  ci = commit</div><div class="line">  br = branch</div><div class="line">  co = checkout</div><div class="line">  df = diff --color</div><div class="line">  rs = reset</div><div class="line">  rb = rebase</div><div class="line">  sh = stash</div><div class="line">  shp = stash pop</div><div class="line">  lg = log --pretty=format:&apos;%h %Cblue%cn %Creset%cr %Cgreen%s&apos;</div><div class="line">  plg = log --graph --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&apos; --abbrev-commit --date=relative</div><div class="line">  lg2 = log --graph --all --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)— %an%C(reset)%C(bold yellow)%d%C(reset)&apos; --abbrev-commit --date=relative</div><div class="line">  alg = log --graph --all --format=format:&apos;%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n&apos;&apos; %C(white)%s%C(reset) %C(bold white)— %an%C(reset)&apos; --abbrev-commit</div></pre></td></tr></table></figure>
+<p>Теперь мы можем просмотреть древовидную историю текущей ветки просто выполнив в терминале <code>git plg</code>, а полную историю репозитория выполнив <code>git alg</code>.<br>Так же <code>git df</code> покажет нам более привычный вид изменений, как например в github’е, а <code>git lg</code> покажет улучшенную историю коммитов.<br>И как я уже говорил, вы получаете это в каждом репозитории живущем на вашей машине.</p>
+<h2 id="bashrc"><a href="#bashrc" class="headerlink" title=".bashrc"></a>.bashrc</h2><p>Не думаю что файл <a href="http://ru.wikipedia.org/wiki/Bash" target="_blank" rel="external">.bashrc</a>, является безизвестным среди аудитории читающей данную статью. Он выполняет команды при инициализации сессии терминала.<br>Добавим некоторые улучшения по работе с git в терминал, просто добавив следующие строки в ~/.bashrc:<br>Про то, что , мы знаем не понаслышке.<br>Поэтому добавим alias для этой комплексной операции, добавив следующие строки в ~/.bashrc:</p>
+<figure class="highlight bash"><figcaption><span>.bashrc</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># отображение в терминале текущей ветки, если мы находимся в репозитории git</span></div><div class="line">PS1=<span class="string">'\[\033[01;36m\]`git branch 2&gt;/dev/null | grep "^* " | sed "s/^* //" | sed "s/%-&gt;%//"` \[\033[01;37m\][\w]\[\033[00m\] \[\033[01;32m\]$\[\033[00m\] '</span></div><div class="line"></div><div class="line"><span class="comment"># чтобы всегда быть "на острие изменений" и ежедневно обновлять состояние ветки изменениями из master'a</span></div><div class="line"><span class="function"><span class="title">git_update_current_branch</span></span>() &#123;</div><div class="line">    br=`git branch | grep <span class="string">"*"</span> | sed <span class="_">-e</span> <span class="string">"s/* //"</span>`</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Stashing changes"</span></div><div class="line">    git stash</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching to master"</span></div><div class="line">    git checkout master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Updating master"</span></div><div class="line">    git pull</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching back to <span class="variable">$br</span>"</span></div><div class="line">    git checkout <span class="variable">$br</span></div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Merging master to <span class="variable">$br</span>"</span></div><div class="line">    git merge master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Unstashing changes"</span></div><div class="line">    git stash pop</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Done!"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># очищаем репозиторий от неиспользуемых веток</span></div><div class="line"><span class="function"><span class="title">git_clear_branches</span></span>() &#123;</div><div class="line">    git checkout master</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Switching to master"</span></div><div class="line">    git branch | grep -v master | xargs git branch -D</div><div class="line">    <span class="built_in">echo</span> <span class="string">" ==== Delete all branches"</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment"># алиасы</span></div><div class="line"><span class="built_in">alias</span> cbr=<span class="string">'git_clear_branches'</span></div><div class="line"><span class="built_in">alias</span> mrg=<span class="string">'git_update_current_branch'</span></div></pre></td></tr></table></figure>
+<p>Конечно в данном варианте присутствует припрятывание текущих изменений используя stash, и оно не всегда валидно работает, например если нет изменений то stash pop выкатит какие-ннибудь давно припрятанные изменения.<br>Но это исправляется узъятием ненужных строк.</p>
+<blockquote><p>Have fun. Git make your life better!</p>
+</blockquote>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://seth2810.github.io/blog/2014/03/24/pimp-my-git.html" data-id="ciznxsjj10003qovm5hemftmm" class="article-share-link">Share</a>
+      
+        <a href="http://seth2810.github.io/blog/2014/03/24/pimp-my-git.html#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/faq/">faq</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/blog/tags/git/">git</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-while-its-compiling-skills-matter-interviews-chris-marshall" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html" class="article-date">
+  <time datetime="2014-03-02T15:23:00.000Z" itemprop="datePublished">02/03/2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/scala/">scala</a>►<a class="article-category-link" href="/blog/categories/scala/translations/">translations</a>►<a class="article-category-link" href="/blog/categories/scala/translations/interview/">interview</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html">Пока оно компилируется - Крис Маршалл</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong> «Пока оно компилируется» - это новый цикл интервью с экспертами и практиками широкого спектра современных технологий, эксклюзивно для <a href="http://www.skillsmatter.com/" target="_blank" rel="external">Skills Matter</a>. Перевод подготовлен по материалам <a href="http://skillsmatterblog.wordpress.com/" target="_blank" rel="external">блога Skills Matter</a>, где публикуются все интервью из цикла.</strong></p>
+<p>Сегодня, мы встретились с <a href="http://www.twitter.com/oxbow_lakes" target="_blank" rel="external">Крисом Маршаллом</a>, одним из 22 лидеров рейтинга StackOverflow. Он занимается коммерческим программированием на протяжении 14 лет, немного на FORTRAN и Smalltalk, затем на Java (с 1999 года) и на Scala (с конца 2008 года) после того, как его терпение окончательно лопнуло. С более чем 12-летним опытом работы с финансовыми IT, у него была работа его мечты в <a href="http://www.gsacapital.com/" target="_blank" rel="external">GSA</a>, маленьком технологически-ориентированном хедже начиная с 2006, которой предшествовало 6 лет работы в <a href="https://www.jpmorgan.com/pages/jpmorgan" target="_blank" rel="external">JPMorgan</a> созданном для букмекерского бизнеса.</p>
+<p>В свободное время он разгадывает <a href="http://www.cs.ox.ac.uk/jeremy.gibbons/publications/iterator.pdf" target="_blank" rel="external">“Суть шаблона Итератор”</a>, с которым он сталкивался 500 раз.</p>
+<h2 id="1-Что-привлекает-Вас-в-функциональных-языках-в-первую-очередь"><a href="#1-Что-привлекает-Вас-в-функциональных-языках-в-первую-очередь" class="headerlink" title="1. Что привлекает Вас в функциональных языках в первую очередь?"></a>1. Что привлекает Вас в функциональных языках в первую очередь?</h2><p>Изначально я был привлечен Scala, как “улучшенной Java” (перед добавлением лямбд, когда включение замыканий в Java, казалось недостижимым). Имея большое количество библиотек на Java, Scala выработала ряд ключевых требований, а именно безшовную интеграцию с Java (которая, насколько я понимаю, вылилась в палку с двумя концами, и соглашаюсь с мнением Брайна МакКенны, что Java должна быть скрыта за внешними функциональными интерфейсами, но что-то я увлекся). Она выглядела “знакомой” (т.е. она не была похожа на Clojure), и имела свою “родословную” (Мартин и EPFL).<br>Начало использования Scala поставило меня на путь открытий типов данных и открыло для меня сообщество, которое показало мне новый (я бы сказал, лучший) способ ведений дел.</p>
+<h2 id="2-Над-чем-вы-сейчас-работаете"><a href="#2-Над-чем-вы-сейчас-работаете" class="headerlink" title="2. Над чем вы сейчас работаете?"></a>2. Над чем вы сейчас работаете?</h2><p>В данное время, я не могу уделять много времени разработке, мы имеем большую команду разработчиков - но моим главным проектом в этом году будет битемпоральное API представляющее “бизнес объекты” в рамках GSA (торговые книги, бизнес-единицы, фонды и т.д.). Мы обнаружили, за последние несколько лет, что не иметь его это очень больно. Помимо этого, есть много усовершенствований для нашей существующей кодовой базы, которые исчисляются тысячами.</p>
+<h2 id="3-Вы-работаете-только-с-функциональными-языками-или-же-в-вашем-проекте-имеется-некоторый-ООП-Процедурный-код-Если-да-то-как-они-уживаются-вместе"><a href="#3-Вы-работаете-только-с-функциональными-языками-или-же-в-вашем-проекте-имеется-некоторый-ООП-Процедурный-код-Если-да-то-как-они-уживаются-вместе" class="headerlink" title="3. Вы работаете только с функциональными языками, или же в вашем проекте имеется некоторый ООП/Процедурный код? Если да, то как они уживаются вместе?"></a>3. Вы работаете только с функциональными языками, или же в вашем проекте имеется некоторый ООП/Процедурный код? Если да, то как они уживаются вместе?</h2><p>Нет - у нас есть много систем на Java, как унаследованных так и нет. Я до сих пор осторожно предоставляю Scala API для внешних команд (потому, что множество наших API нацелены на не специалистов, которые работают в таких языках как Matlab, поэтому ошибки с бинарной совместимостью могут привести к недовольству), поэтому, если бы мы нуждались в чем-то из этого, я бы, наверное предпочел Java.<br>Я тоже пишу чисто функциональный код - множество наших систем работают в режиме реального времени, или 24x5, так что, я могу написать маленькие участки функционального кода, которые в конечном итоге будут запущены на не-функциональных системах (например, на основе акторов).</p>
+<h2 id="4-Какой-бы-совет-вы-могли-дать-новым-программистам"><a href="#4-Какой-бы-совет-вы-могли-дать-новым-программистам" class="headerlink" title="4. Какой бы совет вы могли дать новым программистам?"></a>4. Какой бы совет вы могли дать новым программистам?</h2><p>Не ленитесь. Никогда не переставайте логировать и проверяйте, что ваши сообщения являются полными и содержат всю необходимую вам информацию. Не пишите утверждения и исключения без описательного сообщения об ошибке (ваши инварианты часто оказываются не тем чем надо). В конечном итоге просто добавите его позже, после того как ваша система сломается и вы получите недовольных пользователей, или же вы можете так же просто добавить его сейчас.</p>
+<h2 id="5-О-чем-бы-вы-хотели-спросить-сообщество"><a href="#5-О-чем-бы-вы-хотели-спросить-сообщество" class="headerlink" title="5. О чем бы вы хотели спросить сообщество?"></a>5. О чем бы вы хотели спросить сообщество?</h2><p>Может кто-то пожалуйста продемонстрировать код функциональной системы на Scala работающей в “реальном времени”? Под “реальным временем” я подразумеваю постоянно запущенную и обрабатывающую данные, в отличие от единственного вычисления с определенным концом и результатом.</p>
+<p><a href="http://skillsmatterblog.wordpress.com/2014/02/12/while-its-compiling-skills-matter-interviews-chris-marshall/" target="_blank" rel="external">Оригинал</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://seth2810.github.io/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html" data-id="ciznxsjj20004qovmhcy5c32s" class="article-share-link">Share</a>
+      
+        <a href="http://seth2810.github.io/blog/2014/03/02/while-its-compiling-skills-matter-interviews-chris-marshall.html#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-java-and-scala-former-competitors-may-be-bffs-before-long" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html" class="article-date">
+  <time datetime="2014-03-01T14:00:00.000Z" itemprop="datePublished">01/03/2014</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/blog/categories/scala/">scala</a>►<a class="article-category-link" href="/blog/categories/scala/java/">java</a>►<a class="article-category-link" href="/blog/categories/scala/java/translations/">translations</a>►<a class="article-category-link" href="/blog/categories/scala/java/translations/interview/">interview</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html">Java и Scala - Бывшие конкуренты вскоре могут стать лучшими друзьями</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>В прошлом месяце <a href="http://www.scala-lang.org/" target="_blank" rel="external">язык программирования Scala</a> отпраздновал свою 10-ю годовщину, в то время как Java 8 готовится к своему релизу в марте этого года. Как ни странно, два этих языка, которые соревновались на протяжении стольких лет становятся все более похожими.</p>
+<p>Java все еще возглавляет <a href="http://redmonk.com/sogrady/2014/01/22/language-rankings-1-14/" target="_blank" rel="external">списки популярных языков</a>, но Scala приобрела новых сторонников благодаря акценту на функциональном программировании. Так как в Java 8 добавятся одни из ключевых возможностей Scala, есть вероятность, что позиции Scala могут ослабнуть.</p>
+<p>Хотя есть еще много причин считать, что <a href="http://www.linkedin.com/groups/Will-Java-8-Kill-Scala-746917.S.245445785" target="_blank" rel="external">Java 8 избавит от большей части причин, по которым люди перешли на Scala</a>, недавно я встретился с Мартином Одерски, создателем языка Scala и <a href="http://typesafe.com/company/team" target="_blank" rel="external">председателем Typesafe</a>, чтобы узнать его мнение о том, что стоит между двумя языками, которых объединяет любовь к <a href="http://en.wikipedia.org/wiki/Java_virtual_machine" target="_blank" rel="external">виртуальной машине Java</a>.</p>
+<h2 id="Java-похожая-на-Scala-это-хорошо-для-Scala"><a href="#Java-похожая-на-Scala-это-хорошо-для-Scala" class="headerlink" title="Java похожая на Scala - это хорошо для Scala"></a>Java похожая на Scala - это хорошо для Scala</h2><p><strong>Автор</strong>: Кажется, что Java 8 воспользовалась некоторыми основными, для оригинального дизайна Scala, концепциями. Является ли это защитой от Scala? Другими словами не боитесь ли вы, что усовершенствования в Java 8 могут увести разработчиков из Scala-сообщества?</p>
+<p><strong>Мартин</strong>: Java 8 представляет одно из самых значимых изменений для языка в его истории, вместе с новыми конструкциями, оно изменяет традиционные подходы Java-разработчиков к решению проблем.</p>
+<p>Люди часто спрашивают меня, что если возможности, появляющиеся в Java, замедлят адоптацию Scala. Как раз наоборот! На самом деле, я чувствую, что процесс принятия этих возможностей сообществом Java проверяет наши инновации в дизайне языка на JVM. Когда разработчики осознают, что это за возможности и как они работают, они так же оценят широкую поддержку функционального программирования, которую предоставляет Scala.</p>
+<p>Так же будет повышенный интерес к изучению “Реактивных инструментов”, таких как Akka и фреймворк Play, даже посредством Java API.</p>
+<h2 id="Влияние-Java-8-на-Scala"><a href="#Влияние-Java-8-на-Scala" class="headerlink" title="Влияние Java 8 на Scala"></a>Влияние Java 8 на Scala</h2><p><strong>Автор</strong>: Каким будет основное воздействие Java 8 на Scala?</p>
+<p><strong>Мартин</strong>: Список возможностей включенных в Java 8 на самом деле довольно большой, но некоторые из них особенно интересны для меня. Java 8 безусловно сделает ближе сообщества Java и Scala разработчиков.</p>
+<p>Я так же верю, что это сделает поддержку множества языков на JVM проще, и в то же время даст разработчикам Java почувствовать, развитие языков для поддержки высокой степени конкурентности и параллелизма.</p>
+<h2 id="Java-учит-новые-трюки-с-лямбдами-Последуют-ли-разработчики"><a href="#Java-учит-новые-трюки-с-лямбдами-Последуют-ли-разработчики" class="headerlink" title="Java учит новые трюки с лямбдами: Последуют ли разработчики?"></a>Java учит новые трюки с лямбдами: Последуют ли разработчики?</h2><p><strong>Автор</strong>: Какие возможности Java 8, являются выделяющимися для Вас?</p>
+<p><strong>Мартин</strong>: На мой взгляд, наиболее интересной новинкой являются лямбды. Они будут более полезными для Scala, и стандартизации байт-кода генеруемого компилятором Scala, кстати Java определяет свою поддержку этой возможности, используя функциональные интерфейсы.</p>
+<p>Я сомневаюсь, что это будет трудный скачок для большинства существующих Java разработчиков, знакомых с анонимными реализациями интерфейсов, которые Java позволяла некоторое время. Те же правила применяются, например для запрета на изменение внешних значений.</p>
+<p>Реализация лямбд в Java 8 вносит новые методы в тип java.util.stream.Stream , который звучит доволно знакомо для Scala разработчиков. По моему опыту, эти методы сделают написание высокоуровневого кода для колекций намного проще и будут действовать, как шлюз для изменений в сторону функционального стиля. Большинство пользователей этих абстракций в дополнение оценят читаемость, предоставляемую Scala, вместе с её for-выражениями.</p>
+<p>Иметь эти реализации вероятно будет так же полезно для таких инструментов, как Akka и фреймворк Play, для поддержании более связанного Java API, которое позволит им создавать функциональные интерфейсы, основанные на Java, какие они не могли себе позволить ранее. Это означает, что API будут очень похожи, независимо от того, вызываете вы их из Java или Scala, увеличивая удобство для разработчиков на обоих языках.</p>
+<h2 id="Пишите-байт-код-не-надо-войны"><a href="#Пишите-байт-код-не-надо-войны" class="headerlink" title="Пишите байт-код, не надо войны"></a>Пишите байт-код, не надо войны</h2><p><strong>Автор</strong>: Какие другие возможности выделяются в Java 8?</p>
+<p><strong>Мартин</strong>: Scala разработчики так же будут рады включению реализаций по-умолчанию для методов Java интерфейсов Разработчики компилятора Scala уже давно прыгали через обручи для того, чтобы создавать байт-код для трейтов Scala, который был бы приемлемым для JVM, например создавали интерфейс для трейта и класс для реализации методов, который бы расширялся классами реализующими данный трейт.</p>
+<p>Теперь байт-код генерируемый компилятором Scala может быть чище и соответствовать спецификации Java, продолжая при этом поддерживать линеаризацию.</p>
+<h2 id="Java-все-больше-похожа-на-Scala-с-каждым-днем"><a href="#Java-все-больше-похожа-на-Scala-с-каждым-днем" class="headerlink" title="Java: все больше похожа на Scala с каждым днем"></a>Java: все больше похожа на Scala с каждым днем</h2><p><strong>Автор</strong>: Это звучит почти как вы находитесь в режиме “объятия” с сообществом Java. Я вспоминаю Рода Джонсона, создателя Sprint, с <a href="http://youtu.be/DBu6zmrZ_50" target="_blank" rel="external">противоречивым докладом на ScalaDays</a> прошлым летом в Нью Йорке. Джонсон перечислил примеры, где Scala прозрачна и тяжела, что препятствует ее широкому распространению. Он призвал Scala быть более похожей на Java для того, чтобы быть более дружелюбной и полезной для основного потока разработчиков.</p>
+<p><strong>Мартин</strong>: На самом деле Род, является хорошим другом Scala! Он находится в совете Typesafe вместе со мной. И Typesafe фокусируется на предоставлении первоклассной поддержки для Java разработчиков по работе с инструментарем для конкурентных систем Akka и фреймворком Play.</p>
+<p>На самом деле, Typesafe считает, что добавление данных возможностей в Java 8 поможет нам предоставить более мощные и подвижные API для разработчиков Java, которые точно отражают большую часть нашего пути в Scala. Это хорошо тем, что Java будет иметь конструкции со своими аналогами в Scala. Введение этих и других возможностей под влиянием Scala, таких как не блокирующие CompletableFuture и параллельные коллекции, подчеркивает успешное влияние Scala на будущее Java.</p>
+<p><a href="http://readwrite.com/2014/02/20/java-8-scala-competitors-bffs-martin-odersky" target="_blank" rel="external">Оригинал</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://seth2810.github.io/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html" data-id="ciznxsjis0001qovma5tf6rt8" class="article-share-link">Share</a>
+      
+        <a href="http://seth2810.github.io/blog/2014/03/01/java-and-scala-former-competitors-may-be-bffs-before-long.html#disqus_thread" class="article-comment-link">Comments</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
 
 </section>
         

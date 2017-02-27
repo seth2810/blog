@@ -15,7 +15,7 @@
 <meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/simple-batch.png">
 <meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/multi-step-batch.png">
 <meta property="og:image" content="http://seth2810.github.io/blog/downloads/images/posts/a-handful-akka-techniques/88vce.jpg">
-<meta property="og:updated_time" content="2017-02-26T04:08:13.000Z">
+<meta property="og:updated_time" content="2017-02-26T04:59:40.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Полезные техники Akka">
 <meta name="twitter:description" content="Я использую Akka в течение 3 лет в различных проектах и теперь, я с трудом представляю себе взаимодействие с некоторыми из частей моей работы без нее. Конечно, Scala предоставляет другие мощные паради">
@@ -44,7 +44,7 @@
       </h1>
       
         <h2 id="subtitle-wrap">
-          <a href="/blog/" id="subtitle">Yet another software developer blog.</a>
+          <a href="/blog/" id="subtitle">Yet another software developer blog</a>
         </h2>
       
     </div>
@@ -116,7 +116,7 @@
 </li>
 </ul>
 <p>Теперь, единственной вещью, которую мы должны сделать,  это привести механизм в движение. Для приложения Play, хорошим местом для этого был бы имеющий дурную репутацию <a href="http://www.playframework.com/documentation/2.2.x/ScalaGlobal" target="_blank" rel="external">Global</a>:</p>
-<figure class="highlight scala"><figcaption><span>CockooClockInit.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClockInit.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">Global</span> <span class="keyword">extends</span> <span class="title">GlobalSettings</span> </span>{</div><div class="line"></div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onStart</span></span>(app: <span class="type">Application</span>) {</div><div class="line">    <span class="type">Akka</span>.system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">ScheduledOrderSynchronizer</span>), name = <span class="string">"orderSynchronizer"</span>)</div><div class="line">  }</div></pre></td></tr></table></figure>
+<figure class="highlight scala"><figcaption><span>CockooClockInit.scala</span><a href="/blog/downloads/code/posts/a-handful-akka-techniques/CockooClockInit.scala">view raw</a></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">object</span> <span class="title">Global</span> <span class="keyword">extends</span> <span class="title">GlobalSettings</span> </span>{</div><div class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">onStart</span></span>(app: <span class="type">Application</span>) {</div><div class="line">    <span class="type">Akka</span>.system.actorOf(<span class="type">Props</span>(<span class="keyword">new</span> <span class="type">ScheduledOrderSynchronizer</span>), name = <span class="string">"orderSynchronizer"</span>)</div><div class="line">  }</div><div class="line">}</div></pre></td></tr></table></figure>
 <p>Вот и все! Наши часы с кукушкой готовы бить каждые 5 минут.</p>
 <p>Примечание: API планировщика хорошо подходит для задач, которые подразумевают повторение, и менее для задач, которые должны выполниться в определенное время или дату. Однако, этого можно добиться с API путем расчета времени между инициализацией планировщика и запланированным временем. Для этих случаев, я использую библиотеку <a href="https://github.com/nscala-time/nscala-time" target="_blank" rel="external">nscala-time</a>, которая является оберткой поверх отличной библиотеки <a href="http://www.joda.org/joda-time/" target="_blank" rel="external">Joda Time</a>.</p>
 <h2 id="Пакетный-процессор"><a href="#Пакетный-процессор" class="headerlink" title="Пакетный процессор"></a>Пакетный процессор</h2><p>Одной вещью, которую я нахожу себя делающим довольно часто с Akka, является массовое распараллеливание данной задачи, которая часто связана  Это может быть простая конфигурация, что включает в себя только одного наблюдателя и много рабочих одного вида, или чем-то более сложным с участием упорядочивающего конвейера.</p>
@@ -216,7 +216,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html" data-id="cizm6u0zv00002pgi32oaofv4" class="article-share-link">Share</a>
+      <a data-url="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html" data-id="ciznxsjim0000qovm1t5cc5zx" class="article-share-link">Share</a>
       
         <a href="http://seth2810.github.io/blog/2014/05/09/a-handful-akka-techniques.html#disqus_thread" class="article-comment-link">Comments</a>
       
